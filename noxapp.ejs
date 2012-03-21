@@ -1,0 +1,73 @@
+<% for(var model in models) { %>
+var <%= model %>Model = Backbone.Model.extend({
+  name : '<%= model %>',
+});
+
+var <%= model %>Collection = Backbone.Collection.extend({
+  name : '<%= model %>s',
+  model_name : '<%= model %>',
+  model: <%= model %>Model,
+});<% } %>
+<% for(var model in models) { %>
+var <%=: model | downcase %>Collection = new <%= model %>Collection();<% } %>
+
+var ModelView = Backbone.View.extend({
+  el: "#content",
+  initialize: function(){
+  },
+  link : function(model){
+    this.model = model;
+  },
+  render: function(id){
+    //var compiledTemplate = _.template( 'This is : '+this.model.name+','+id,{});
+    $(this.el).html('This is : '+this.model.name+','+id);
+    Backbone.ModelBinding.bind(this);
+  }
+});
+var modelView = new ModelView();
+
+var CollectionView = Backbone.View.extend({
+  el: "#content",
+  initialize: function(){
+  },
+  link : function(collection){
+    this.collection = collection;
+  },
+  render: function(){
+    var compiledTemplate = _.template( 'This is : '+this.model.name+'s');
+    $(this.el).html('This is '+this.collection.name+' a collection of '+this.collection.model_name);
+    Backbone.ModelBinding.bind(this);
+  }
+});
+var collectionView = new CollectionView();
+
+
+var Router = Backbone.Router.extend({
+  routes: {
+    <% for(var model in models) { %>
+    '/<%= model %>/:id'  : 'show<%= model %>',
+    '/<%= model %>s'     : 'show<%= model %>s',<% } %>
+    '*actions': 'defaultAction'
+  },
+  <% for(var model in models) { %>
+  show<%= model %> : function(pid){
+    alert('<%= model %> - '+pid);  
+    modelView.link(new <%= model %>Model());
+    modelView.render(pid);
+  },
+  show<%= model %>s : function(){
+    alert('<%= model %>s'); 
+    collectionView.link(<%=: model | downcase %>Collection);
+    collectionView.render();  
+  },<% } %>
+  defaultAction: function(actions){
+    alert('No route: ' + actions);  
+    console.log('No route:', actions);
+  }
+});
+
+var router = new Router();
+Backbone.history.start();
+
+authorCollection.add(new AuthorModel({name:'Edgar Alan Poe'}));
+authorCollection.add(new AuthorModel({name:'Ernest Hemingway'}));

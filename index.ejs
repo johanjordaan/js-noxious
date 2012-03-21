@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title><%= settings.title %></title>
+  <% for(var i in settings.libs) { %><script src="js/<%= settings.libs[i].file %>.js"></script>
+  <% } %>
+</head>
+<body>
+
+<div id="container">
+  <div id="menu"></div>
+  <div id="content"></div>
+</div>
+
+<script src="js/noxapp.js"></script>
+
+</body>
+</html>
