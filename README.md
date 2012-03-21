@@ -1,7 +1,7 @@
 js-noxious [UNDER CONSTRUCTION]
 =============
 
-PLEASE CHECk BACK SOON THIS SITE IS UNDER CONSTRUCTION. 
+PLEASE CHECK BACK SOON THIS SITE IS UNDER CONSTRUCTION. 
 
 To see the current progress have a look on Trello : [https://trello.com/board/js-noxious/4f6a2de325bedec17c016ad1]
 
