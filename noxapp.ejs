@@ -1,12 +1,13 @@
 <% for(var model in models) { %>
 var <%= model %>Model = Backbone.Model.extend({
-  name : '<%= model %>',
+  __model_name : '<%= model %>',
 });
 
 var <%= model %>Collection = Backbone.Collection.extend({
-  name : '<%= model %>s',
-  model_name : '<%= model %>',
-  model: <%= model %>Model,
+  __name : '<%= model %>s',
+  __model_name : '<%= model %>',
+  __model: <%= model %>Model,
+  __list_display: [<% for(var i in models[model].__list_display) {%>'<%= models[model].__list_display[i] %>',<%} %>]
 });<% } %>
 <% for(var model in models) { %>
 var <%=: model | downcase %>Collection = new <%= model %>Collection();<% } %>
@@ -19,8 +20,8 @@ var ModelView = Backbone.View.extend({
     this.model = model;
   },
   render: function(id){
-    //var compiledTemplate = _.template( 'This is : '+this.model.name+','+id,{});
-    $(this.el).html('This is : '+this.model.name+','+id);
+    //var compiledTemplate = _.template( 'This is : '+this.model.__model_name+','+id,{});
+    $(this.el).html('This is : '+this.model.__model_name+','+id);
     Backbone.ModelBinding.bind(this);
   }
 });
@@ -34,12 +35,17 @@ var CollectionView = Backbone.View.extend({
     this.collection = collection;
   },
   render: function(){
-    var compiledTemplate = _.template( 'This is : '+this.model.name+'s');
-    $(this.el).html('This is '+this.collection.name+' a collection of '+this.collection.model_name);
-    Backbone.ModelBinding.bind(this);
+    $(this.el).html(require('ejs').render($('#list_view').html(), { headings:this.collection.__list_display,items:this.collection.models,model_name:this.collection.__model_name  }));
+    //$(this.el).html(_.template( $('#list_template').html(), {}  ));
+    //var compiledTemplate = _.template( 'This is : '+this.model.name+'s');
+    //$(this.el).html('This is '+this.collection.__name+' a collection of '+this.collection.__model_name);
+    //Backbone.ModelBinding.bind(this);
   }
 });
 var collectionView = new CollectionView();
+
+authorCollection.add(new AuthorModel({id:0,name:'Edgar Alan',surname:'Poe'}));
+authorCollection.add(new AuthorModel({id:1,name:'Ernest',surname:'Hemingway'}));
 
 
 var Router = Backbone.Router.extend({
@@ -56,18 +62,16 @@ var Router = Backbone.Router.extend({
     modelView.render(pid);
   },
   show<%= model %>s : function(){
-    alert('<%= model %>s'); 
+    //alert('<%= model %>s'); 
     collectionView.link(<%=: model | downcase %>Collection);
     collectionView.render();  
   },<% } %>
   defaultAction: function(actions){
-    alert('No route: ' + actions);  
-    console.log('No route:', actions);
+    alert('No route: ' + [actions,'hallo']);  
+    console.log('No route:', [actions,'hallo']);
   }
 });
 
 var router = new Router();
 Backbone.history.start();
 
-authorCollection.add(new AuthorModel({name:'Edgar Alan Poe'}));
-authorCollection.add(new AuthorModel({name:'Ernest Hemingway'}));

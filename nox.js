@@ -37,6 +37,10 @@ for(var file_key in settings.files) {
   }  
 }
 
+for(var i in settings.app_templates) {
+  settings.app_templates[i].text = fs.readFileSync(settings.app_templates[i].file,'utf8');
+}
+
 for(var i in settings.templates) {
   render(settings.templates[i].template,{settings:settings,models:models},path.join(settings.destination,settings.templates[i].destination));
 }

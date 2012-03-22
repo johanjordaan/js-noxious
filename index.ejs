@@ -7,6 +7,11 @@
 </head>
 <body>
 
+<% for(var template in settings.app_templates) { %>
+<script type="text/template" id="<%= settings.app_templates[template].name %>">
+<%- settings.app_templates[template].text %>
+</script><% } %>
+
 <div id="container">
   <div id="menu"></div>
   <div id="content"></div>
