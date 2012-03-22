@@ -19,11 +19,17 @@ copy = function(source,target) {
   fs.writeFileSync(target,fs.readFileSync(source,'utf8'));
 }
 
+String.prototype.startsWith = function (str){
+  return this.indexOf(str) == 0;
+};
+
 render = function(template,params,destination) {
   t = fs.readFileSync(template,'utf8') ;
   tr = ejs.render(t,params);
   fs.writeFileSync(destination,tr);
 }
+
+
 
 
 mkdir(settings.destination); 
@@ -39,6 +45,15 @@ for(var file_key in settings.files) {
 
 for(var i in settings.app_templates) {
   settings.app_templates[i].text = fs.readFileSync(settings.app_templates[i].file,'utf8');
+}
+
+for(var model in models) {
+  models[model].__fields = [];
+  for(var field in models[model]){
+    if(!field.startsWith('__')) {
+      models[model].__fields.push(field);
+    }
+  }
 }
 
 for(var i in settings.templates) {

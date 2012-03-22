@@ -1,6 +1,6 @@
 {
   "name"          : "noxious",
-  "description"   : "Awseome super secret goodness.",
+  "description"   : "Awesome super secret goodness.",
   "url"           : "https://github.com/whoatemydomain/js-noxious",
   "keywords"      : ["util", "functional", "server", "client", "browser"],
   "author"        : "Johan Jordaan <johan@whoatemydomain.co.za>",
@@ -11,5 +11,5 @@
   },
   "lib"           : ".",
   "main"          : "nox.js",
-  "version"       : "12.03.19"
+  "version"       : "0.0.0"
 }

@@ -17,5 +17,6 @@ exports.settings = {
   ],
   app_templates : [
     {name:"list_view",file:"list_view.ejs"},
+    {name:"edit_view",file:"edit_view.ejs"},
   ]
 }

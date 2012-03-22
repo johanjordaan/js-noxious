@@ -1,10 +1,10 @@
-<b><%= name %></b>
 <table border>
-  <tr><% for(h in headings) { %> <th><%= headings[h] %></th><% } %> <td></td></tr>
+  <tr><% for(h in headings) { %> <th><%= headings[h] %></th><% } %> <td></td><td></td></tr>
   <% for(i in items) { %>  
   <tr>
     <% for(h in headings) { %> <th><%= items[i].attributes[headings[h]] %></th><% } %> 
     <td><a href="#/<%= model_name %>/<%= items[i].attributes['id'] %>">View</a></td>
+    <td><a href="#/<%= model_name %>s/Delete/<%= items[i].attributes['id'] %>">Delete</a></td>
   </tr>
   <% } %>
 </table>

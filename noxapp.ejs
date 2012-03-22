@@ -1,6 +1,7 @@
 <% for(var model in models) { %>
 var <%= model %>Model = Backbone.Model.extend({
   __model_name : '<%= model %>',
+  __fields : [<% for(var i in models[model].__fields) {%>'<%= models[model].__fields[i] %>',<%} %>],
 });
 
 var <%= model %>Collection = Backbone.Collection.extend({
@@ -20,9 +21,8 @@ var ModelView = Backbone.View.extend({
     this.model = model;
   },
   render: function(id){
-    //var compiledTemplate = _.template( 'This is : '+this.model.__model_name+','+id,{});
-    $(this.el).html('This is : '+this.model.__model_name+','+id);
-    Backbone.ModelBinding.bind(this);
+    $(this.el).html(require('ejs').render($('#edit_view').html(), { model:this.model  }));
+    //Backbone.ModelBinding.bind(this);
   }
 });
 var modelView = new ModelView();
@@ -36,10 +36,6 @@ var CollectionView = Backbone.View.extend({
   },
   render: function(){
     $(this.el).html(require('ejs').render($('#list_view').html(), { headings:this.collection.__list_display,items:this.collection.models,model_name:this.collection.__model_name  }));
-    //$(this.el).html(_.template( $('#list_template').html(), {}  ));
-    //var compiledTemplate = _.template( 'This is : '+this.model.name+'s');
-    //$(this.el).html('This is '+this.collection.__name+' a collection of '+this.collection.__model_name);
-    //Backbone.ModelBinding.bind(this);
   }
 });
 var collectionView = new CollectionView();
@@ -51,20 +47,25 @@ authorCollection.add(new AuthorModel({id:1,name:'Ernest',surname:'Hemingway'}));
 var Router = Backbone.Router.extend({
   routes: {
     <% for(var model in models) { %>
-    '/<%= model %>/:id'  : 'show<%= model %>',
-    '/<%= model %>s'     : 'show<%= model %>s',<% } %>
+    '/<%= model %>/:id'         : 'edit<%= model %>',
+    '/<%= model %>s'            : 'view<%= model %>s',
+    '/<%= model %>s/Delete/:id' : 'delete<%= model %>s',<% } %>
     '*actions': 'defaultAction'
   },
   <% for(var model in models) { %>
-  show<%= model %> : function(pid){
-    alert('<%= model %> - '+pid);  
-    modelView.link(new <%= model %>Model());
-    modelView.render(pid);
+  edit<%= model %> : function(id){
+    //alert('<%= model %> - '+id);  
+    modelView.link(<%=: model | downcase %>Collection.get(id));
+    modelView.render(id);
   },
-  show<%= model %>s : function(){
+  view<%= model %>s : function(){
     //alert('<%= model %>s'); 
     collectionView.link(<%=: model | downcase %>Collection);
     collectionView.render();  
+  },
+  delete<%= model %>s : function(id){
+    <%=: model | downcase %>Collection.remove(<%=: model | downcase %>Collection.get(id));
+    this.view<%= model %>s();
   },<% } %>
   defaultAction: function(actions){
     alert('No route: ' + [actions,'hallo']);  

@@ -2,7 +2,7 @@ exports.Author = {
   __list_display : ['name','surname'],
   name : { type:'Text' },
   surname : { type:'Text' }, 
-  as_string : { type:'Calculated',code:"function() { return this.surname+', '+this.name; }" }
+//  as_string : { type:'Calculated',code:"function() { return this.surname+', '+this.name; }" }
 };
 
 exports.Book = {

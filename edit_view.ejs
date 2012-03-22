@@ -1,0 +1,4 @@
+<% for(i in model.__fields) { %>
+  <% var field_name = model.__fields[i]; %>
+  <%= field_name %> <%= model.attributes[field_name] %><br>
+<% } %>
