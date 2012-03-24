@@ -1,0 +1,8 @@
+<table>
+<% for(var i in model.__meta.fields) { %>
+<%   var cur_f = model.__meta.fields[i];%>
+<tr><td>
+  <input id="<%= cur_f %>"/>
+</td></tr>
+<% } %>  
+</table>

@@ -1,29 +1,31 @@
-<% for(var model in models) { %>
-var <%= model %>Model = Backbone.Model.extend({
-  __model_name : '<%= model %>',
-  __fields : [<% for(var i in models[model].__fields) {%>'<%= models[model].__fields[i] %>',<%} %>],
+<% for(var model_key in models) { %>
+<% var model = models[model_key] %>
+var <%= model_key %>Meta = {
+  fields : [<% for(var i in model.__meta.fields) {%>'<%= model.__meta.fields[i] %>',<%} %>],
+  list_fields : [<% for(var i in model.__meta.list_fields) {%>'<%= model.__meta.list_fields[i] %>',<%} %>],
+<% for(var i in model.__meta.fields) { -%>
+<% var field_name = model.__meta.fields[i]; var field = model[field_name]; -%>
+  <%= field_name %> : <%- field.js_new_code() %>,
+<% } %>}
+
+var <%= model_key %>Model = Backbone.Model.extend({                                   
+  __meta : <%= model_key %>Meta,
 });
 
-var <%= model %>Collection = Backbone.Collection.extend({
-  __name : '<%= model %>s',
-  __model_name : '<%= model %>',
-  __model: <%= model %>Model,
-  __list_display: [<% for(var i in models[model].__list_display) {%>'<%= models[model].__list_display[i] %>',<%} %>]
-});<% } %>
-<% for(var model in models) { %>
-var <%=: model | downcase %>Collection = new <%= model %>Collection();<% } %>
+var <%= model_key %>Collection =  Backbone.Collection.extend({                                   
+  model :  <%= model_key %>,
+});
+<% } %>
 
 var ModelView = Backbone.View.extend({
   el: "#content",
   initialize: function(){
   },
-  link : function(model){
+  render : function(model) {
     this.model = model;
-  },
-  render: function(id){
-    $(this.el).html(require('ejs').render($('#edit_view').html(), { model:this.model  }));
-    //Backbone.ModelBinding.bind(this);
-  }
+    $(this.el).html(require('ejs').render($('#form_view_template').html(), { model:this.model }));
+    Backbone.ModelBinding.bind(this);
+  },  
 });
 var modelView = new ModelView();
 
@@ -34,9 +36,10 @@ var CollectionView = Backbone.View.extend({
   link : function(collection){
     this.collection = collection;
   },
-  render: function(){
-    $(this.el).html(require('ejs').render($('#list_view').html(), { headings:this.collection.__list_display,items:this.collection.models,model_name:this.collection.__model_name  }));
-  }
+  render: function(c) {
+    this.collection = c;
+    $(this.el).html(require('ejs').render($('#list_view_template').html(), { __meta:model.__meta, models:this.collection.models }));
+  },
 });
 var collectionView = new CollectionView();
 
@@ -54,14 +57,10 @@ var Router = Backbone.Router.extend({
   },
   <% for(var model in models) { %>
   edit<%= model %> : function(id){
-    //alert('<%= model %> - '+id);  
-    modelView.link(<%=: model | downcase %>Collection.get(id));
-    modelView.render(id);
+    modelView.render(<%=: model | downcase %>Collection.get(id));
   },
   view<%= model %>s : function(){
-    //alert('<%= model %>s'); 
-    collectionView.link(<%=: model | downcase %>Collection);
-    collectionView.render();  
+    collectionView.render(<%=: model | downcase %>Collection);  
   },
   delete<%= model %>s : function(id){
     <%=: model | downcase %>Collection.remove(<%=: model | downcase %>Collection.get(id));

@@ -3,6 +3,8 @@ path = require('path');
 ejs = require('ejs');
 __ = require('underscore');
 
+noxt = require('./noxious_types');
+
 settings = require('./settings').settings;
 models = require(process.argv[2]);
 
@@ -29,12 +31,12 @@ render = function(template,params,destination) {
   fs.writeFileSync(destination,tr);
 }
 
-
-
-
 mkdir(settings.destination); 
 mkdir(settings.destination +'/js');
 
+// Create the file structure for the application and copy the 
+// files mentioned in the settings.files property
+//
 for(var file_key in settings.files) {
   dest = path.join(settings.destination,file_key);
   mkdir(dest);
@@ -43,27 +45,51 @@ for(var file_key in settings.files) {
   }  
 }
 
+// Each application template which is mentioned is read and stored in the text propery of the
+// settings.app_template item. This is used later to redner the <script/> sections.
+//
 for(var i in settings.app_templates) {
   settings.app_templates[i].text = fs.readFileSync(settings.app_templates[i].file,'utf8');
 }
 
-for(var model in models) {
-  models[model].__fields = [];
-  for(var field in models[model]){
-    if(!field.startsWith('__')) {
-      models[model].__fields.push(field);
+
+for(var model_key in models) {
+  var model = models[model_key];
+  // Define __meta if its is not defined
+  //
+  if(!model.__meta)
+    model.__meta = {}
+  // If the ignore fields has not been defined then define it and att __meta
+  // If it has been defined then __meta would most probably not be in it so add
+  // it since we never want meta is the list
+  //
+  if(!model.__meta.ignore_fields)
+    model.__meta.ignore_fields = ['__meta']
+  if(model.__meta.ignore_fields.indexOf('__meta')==-1)
+    model.__meta.ignore_fields.push('__meta');
+  // If the __meta fields doe not exists then create it by using the fields in the 
+  // definition and exclusing the ignore ones
+  //
+  if(!model.__meta.fields) {
+    model.__meta.fields = []
+    for(var field in model){
+      if(model.__meta.ignore_fields.indexOf(field)==-1)
+        model.__meta.fields.push(field);
     }
   }
+  // Create listfields if it does not exist and default it to the fields list
+  //
+  if(!model.__meta.list_fields)
+    model.__meta.list_fields = model.__meta.fields;
+  
+  for(var field_key in model){
+    model[field_key].field_name = field_key;
+  }
+ 
+  console.log(model);  
 }
 
 for(var i in settings.templates) {
   render(settings.templates[i].template,{settings:settings,models:models},path.join(settings.destination,settings.templates[i].destination));
 }
 
-//for(var i in d) {
-//  d[i].name = i;
-//  render('model.ejs',d[i],path.join(settings.destination,'/js/models/',i+'.js'));
-//  render('collection.ejs',d[i],path.join(settings.destination,'/js/collections/',i+'Collection.js'));
-//  render('listview.ejs',d[i],path.join(settings.destination,'/js/views/',i+'ListView.js'));
-//  render('view.ejs',d[i],path.join(settings.destination,'/js/views/',i+'View.js'));
-//}
