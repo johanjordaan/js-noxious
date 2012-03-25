@@ -13,8 +13,10 @@ var <%= model_key %>Model = Backbone.Model.extend({
 });
 
 var <%= model_key %>Collection =  Backbone.Collection.extend({                                   
-  model :  <%= model_key %>,
+  __meta : <%= model_key %>Meta,
+  model :  <%= model_key %>Model,
 });
+var <%=: model_key | downcase %>Collection = new <%= model_key %>Collection();
 <% } %>
 
 var ModelView = Backbone.View.extend({
@@ -36,9 +38,9 @@ var CollectionView = Backbone.View.extend({
   link : function(collection){
     this.collection = collection;
   },
-  render: function(c) {
-    this.collection = c;
-    $(this.el).html(require('ejs').render($('#list_view_template').html(), { __meta:model.__meta, models:this.collection.models }));
+  render: function(collection) {
+    this.collection = collection;
+    $(this.el).html(require('ejs').render($('#list_view_template').html(), { __meta:collection.__meta, models:this.collection.models }));
   },
 });
 var collectionView = new CollectionView();

@@ -85,8 +85,6 @@ for(var model_key in models) {
   for(var field_key in model){
     model[field_key].field_name = field_key;
   }
- 
-  console.log(model);  
 }
 
 for(var i in settings.templates) {
