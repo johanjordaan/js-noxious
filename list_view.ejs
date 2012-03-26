@@ -1,8 +1,9 @@
-<table>
+<table border>
 <tr>
 <% for(var i in __meta.fields) { %>
   <th><%= __meta.fields[i] %></th>
 <% } %>
+<th></th><th></th>
 </tr>
 
 <% for(var m in models) { %>
@@ -10,6 +11,8 @@
 <% for(var i in __meta.fields) { %>
   <td><%= models[m].attributes[__meta.fields[i]] %></td>
 <% } %>
+  <td><a href="#/<%= __meta.model_name %>/<%= models[m].attributes['id'] %>">View</a></td>
+  <td><a href="#/<%= __meta.model_name %>s/Delete/<%= models[m].attributes['id'] %>">Delete</a></td>
 </tr>
 <% } %>
 </table>  

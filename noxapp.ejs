@@ -1,6 +1,7 @@
 <% for(var model_key in models) { %>
 <% var model = models[model_key] %>
 var <%= model_key %>Meta = {
+  model_name : '<%= model_key %>',
   fields : [<% for(var i in model.__meta.fields) {%>'<%= model.__meta.fields[i] %>',<%} %>],
   list_fields : [<% for(var i in model.__meta.list_fields) {%>'<%= model.__meta.list_fields[i] %>',<%} %>],
 <% for(var i in model.__meta.fields) { -%>
@@ -66,7 +67,7 @@ var Router = Backbone.Router.extend({
   },
   delete<%= model %>s : function(id){
     <%=: model | downcase %>Collection.remove(<%=: model | downcase %>Collection.get(id));
-    this.view<%= model %>s();
+    window.location = '#/<%= model %>s'
   },<% } %>
   defaultAction: function(actions){
     alert('No route: ' + [actions,'hallo']);  
