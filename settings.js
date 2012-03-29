@@ -2,7 +2,13 @@ exports.settings = {
   title : 'noxapp',
   destination : 'nox_output',
   files : {
-    'js' : [ 'lib/jquery-1.7.1.min.js','lib/underscore-min.js','lib/backbone-min.js','lib/backbone.modelbinding.min.js','lib/ejs.min.js','noxious_types.js' ],
+    'public/js' : [ 
+      'lib/jquery-1.7.1.min.js',
+      'lib/underscore-min.js',
+      'lib/backbone-min.js',
+      'lib/backbone.modelbinding.min.js',
+      'lib/ejs.min.js','noxious_types.js' 
+    ],
   },
   libs : [
     { alias : 'jquery', file : 'jquery-1.7.1.min'},
@@ -13,10 +19,15 @@ exports.settings = {
     { alias : 'noxt', file : 'noxious_types'},
   ],
   templates : [
-    {template:'index.ejs',destination:'index.html'},
-    {template:'noxapp.ejs',destination:'js/noxapp.js'},
+    // UI Templates
+    {template:'index.ejs',destination:'public/index.html'},
+    {template:'noxapp.ejs',destination:'public/js/noxapp.js'},
+    // Server Templates
+    {template:'app.ejs',destination:'app.js'},
+    {template:'package.ejs',destination:'package.json'},
+    {template:'dal.ejs',destination:'dal.js'},
   ],
-  app_templates : [
+  ui_templates : [
     {name:"form_view_template",file:"form_view.ejs"},
     {name:"list_view_template",file:"list_view.ejs"},
   ]

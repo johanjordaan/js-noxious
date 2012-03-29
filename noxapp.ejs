@@ -49,7 +49,8 @@ var collectionView = new CollectionView();
 authorCollection.add(new AuthorModel({id:0,name:'Edgar Alan',surname:'Poe'}));
 authorCollection.add(new AuthorModel({id:1,name:'Ernest',surname:'Hemingway'}));
 
-
+var newModel = new Object();
+var nextId = 2;
 var Router = Backbone.Router.extend({
   routes: {
     <% for(var model in models) { %>
@@ -60,10 +61,21 @@ var Router = Backbone.Router.extend({
   },
   <% for(var model in models) { %>
   edit<%= model %> : function(id){
-    modelView.render(<%=: model | downcase %>Collection.get(id));
+	if(id==-1) {
+		newModel = new <%= model %>Model({id:-1});
+		modelView.render(newModel);
+	} else {
+		modelView.render(<%=: model | downcase %>Collection.get(id));
+	}
+	$("#save_button").click(function() { 
+		newModel.attributes['id'] = nextId++;
+		<%=: model | downcase %>Collection.add(newModel); 
+		window.location = "#/<%= model %>s";
+	});	
   },
   view<%= model %>s : function(){
-    collectionView.render(<%=: model | downcase %>Collection);  
+    collectionView.render(<%=: model | downcase %>Collection);
+	$("#add_button").click(function(){ window.location = "#/<%= model %>/-1"; } );	
   },
   delete<%= model %>s : function(id){
     <%=: model | downcase %>Collection.remove(<%=: model | downcase %>Collection.get(id));

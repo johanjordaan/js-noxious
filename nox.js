@@ -18,6 +18,17 @@ mkdir = function(path) {
 }
 
 copy = function(source,target) {
+  var stack = [];
+  var res = path.dirname(target);
+  while(res != '.') {
+    stack.push(res);
+    res = path.dirname(res);
+  }
+  while(stack.length>0) {
+    val = stack.pop();
+    mkdir(val);
+  }
+  
   fs.writeFileSync(target,fs.readFileSync(source,'utf8'));
 }
 
@@ -31,25 +42,21 @@ render = function(template,params,destination) {
   fs.writeFileSync(destination,tr);
 }
 
-mkdir(settings.destination); 
-mkdir(settings.destination +'/js');
-
 // Create the file structure for the application and copy the 
 // files mentioned in the settings.files property
 //
 for(var file_key in settings.files) {
   dest = path.join(settings.destination,file_key);
-  mkdir(dest);
   for(var i in settings.files[file_key]) {
     copy(settings.files[file_key][i],path.join(dest,path.basename(settings.files[file_key][i])));
   }  
 }
 
 // Each application template which is mentioned is read and stored in the text propery of the
-// settings.app_template item. This is used later to redner the <script/> sections.
+// settings.ui_template item. This is used later to redner the <script/> sections.
 //
 for(var i in settings.app_templates) {
-  settings.app_templates[i].text = fs.readFileSync(settings.app_templates[i].file,'utf8');
+  settings.ui_templates[i].text = fs.readFileSync(settings.ui_templates[i].file,'utf8');
 }
 
 
