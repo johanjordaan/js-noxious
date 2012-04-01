@@ -1,5 +1,4 @@
-var express = require('express')
-  , routes = require('./routes');
+var express = require('express');
 
 var app = module.exports = express.createServer();
 
@@ -25,13 +24,16 @@ app.configure('production', function(){
 });
 
 // Routes
-var AuthorProvider = require('./AuthorProvider').AuthorProvider;
-var authorProvider= new AuthorProvider();
-app.get('/authors', function(req, res){
-  authorProvider.findAll(function(error,authors) {
-    res.json(authors);
+var providers = require('./providers');
+<% for(var model_key in models) { -%>
+<% var model = models[model_key] -%>
+var <%=: model_key | downcase %>Provider= new providers.<%= model_key %>Provider();
+app.get('/<%=: model_key %>s', function(req, res){
+  <%=: model_key | downcase %>Provider.findAll(function(error,<%=: model_key | downcase %>s) {
+    res.json(<%=: model_key | downcase %>s);
   });
 });
+<% } -%>
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);

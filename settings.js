@@ -25,7 +25,7 @@ exports.settings = {
     // Server Templates
     {template:'app.ejs',destination:'app.js'},
     {template:'package.ejs',destination:'package.json'},
-    {template:'dal.ejs',destination:'dal.js'},
+    {template:'providers.ejs',destination:'providers.js'},
   ],
   ui_templates : [
     {name:"form_view_template",file:"form_view.ejs"},
